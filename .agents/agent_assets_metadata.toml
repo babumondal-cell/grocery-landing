@@ -1,0 +1,62 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "EBpcMW_hJOmVL2t7bLDXs"
+uri = "file://artifacts/grocery-shop/public/images/hero.png"
+type = "image"
+title = "Farmers market hero background"
+
+[[generated]]
+id = "9vSoMFxeyzn7X9ZDtFbwA"
+uri = "file://artifacts/grocery-shop/public/images/cat-fruits.png"
+type = "image"
+title = "Fresh fruits category"
+
+[[generated]]
+id = "cjnHW5tcO6NybjEKju_lO"
+uri = "file://artifacts/grocery-shop/public/images/cat-veg.png"
+type = "image"
+title = "Fresh vegetables category"
+
+[[generated]]
+id = "kWw8Ygjx8AGai-3TYtFi6"
+uri = "file://artifacts/grocery-shop/public/images/cat-dairy.png"
+type = "image"
+title = "Dairy and cheese category"
+
+[[generated]]
+id = "1Kg6yR_U2p4aVacxiCTLM"
+uri = "file://artifacts/grocery-shop/public/images/cat-bakery.png"
+type = "image"
+title = "Bakery category"
+
+[[generated]]
+id = "7S1z8Oo6DVsXxBrbmOxTF"
+uri = "file://artifacts/grocery-shop/public/images/cat-meat.png"
+type = "image"
+title = "Premium meat category"
+
+[[generated]]
+id = "kst_SbitsIJIx_gDJiZvy"
+uri = "file://artifacts/grocery-shop/public/images/prod-avocado.png"
+type = "image"
+title = "Ripe avocados product"
+
+[[generated]]
+id = "YwBsSoBXwk3CHFJdncoy1"
+uri = "file://artifacts/grocery-shop/public/images/prod-bread.png"
+type = "image"
+title = "Sourdough loaf product"
+
+[[generated]]
+id = "RZ7zOAybfOXGyS8n0REs7"
+uri = "file://artifacts/grocery-shop/public/images/prod-eggs.png"
+type = "image"
+title = "Fresh eggs product"
+
+[[generated]]
+id = "Pz9Xhl7Cg05cpppee5Kuc"
+uri = "file://artifacts/grocery-shop/public/images/prod-milk.png"
+type = "image"
+title = "Fresh milk product"
