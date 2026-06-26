@@ -61,12 +61,12 @@ export default function CartPage() {
                     data-testid={`cart-item-${item.id}`}
                   >
                     <img
-                      src={item.productImage}
-                      alt={item.productName}
+                      src={item.product_image}
+                      alt={item.product_name}
                       className="h-20 w-20 rounded-xl object-cover bg-muted/30 flex-shrink-0"
                     />
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-foreground truncate">{item.productName}</h3>
+                      <h3 className="font-semibold text-foreground truncate">{item.product_name}</h3>
                       <p className="text-primary font-bold mt-1">${parseFloat(item.price).toFixed(2)}</p>
                     </div>
                     <div className="flex items-center gap-2">
