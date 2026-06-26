@@ -10,13 +10,18 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: categories
+    description: Product categories
+  - name: products
+    description: Grocery products
+  - name: cart
+    description: Shopping cart
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +29,141 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /categories:
+    get:
+      operationId: listCategories
+      tags: [categories]
+      summary: List all categories
+      responses:
+        "200":
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+
+  /products:
+    get:
+      operationId: listProducts
+      tags: [products]
+      summary: List products
+      parameters:
+        - name: categoryId
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: featured
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: List of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+
+  /cart:
+    get:
+      operationId: getCart
+      tags: [cart]
+      summary: Get cart items for session
+      parameters:
+        - name: sessionId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Cart items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CartItem"
+    post:
+      operationId: addToCart
+      tags: [cart]
+      summary: Add item to cart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddToCartInput"
+      responses:
+        "201":
+          description: Item added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CartItem"
+
+  /cart/{id}:
+    delete:
+      operationId: removeFromCart
+      tags: [cart]
+      summary: Remove item from cart
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Item removed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                required:
+                  - success
+
+  /cart/{id}/quantity:
+    patch:
+      operationId: updateCartQuantity
+      tags: [cart]
+      summary: Update cart item quantity
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+                  minimum: 1
+              required:
+                - quantity
+      responses:
+        "200":
+          description: Updated cart item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CartItem"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +174,108 @@ components:
       required:
         - status
 
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        image:
+          type: string
+        color:
+          type: string
+      required:
+        - id
+        - name
+        - image
+        - color
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        image:
+          type: string
+        price:
+          type: string
+        unit:
+          type: string
+        badge:
+          type: string
+          nullable: true
+        categoryId:
+          type: integer
+          nullable: true
+        rating:
+          type: string
+        reviewCount:
+          type: integer
+        inStock:
+          type: boolean
+        isOrganic:
+          type: boolean
+        isFeatured:
+          type: boolean
+      required:
+        - id
+        - name
+        - image
+        - price
+        - unit
+        - rating
+        - reviewCount
+        - inStock
+        - isOrganic
+        - isFeatured
+
+    CartItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        sessionId:
+          type: string
+        productId:
+          type: integer
+        productName:
+          type: string
+        productImage:
+          type: string
+        price:
+          type: string
+        quantity:
+          type: integer
+      required:
+        - id
+        - sessionId
+        - productId
+        - productName
+        - productImage
+        - price
+        - quantity
+
+    AddToCartInput:
+      type: object
+      properties:
+        sessionId:
+          type: string
+        productId:
+          type: integer
+        productName:
+          type: string
+        productImage:
+          type: string
+        price:
+          type: string
+        quantity:
+          type: integer
+      required:
+        - sessionId
+        - productId
+        - productName
+        - productImage
+        - price
