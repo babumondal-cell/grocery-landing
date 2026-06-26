@@ -125,7 +125,7 @@ function Hero() {
             </span>
           </motion.div>
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }} className="text-5xl md:text-7xl font-bold leading-tight mb-6">
-            Taste the <span className="text-primary italic">freshness</span> of real food.
+            Taste the <span className="text-primary italic">freshness</span> of real food and veggies.
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="text-lg md:text-xl text-foreground/80 mb-8 max-w-lg leading-relaxed">
             We bring the vibrant, sun-drenched farmers market straight to your kitchen. Organic, locally sourced, and bursting with flavor.
