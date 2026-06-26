@@ -1,6 +1,5 @@
 import { Router } from "express";
-import { db, cartItemsTable } from "@workspace/db";
-import { eq, and } from "drizzle-orm";
+import { getSupabaseClient } from "../lib/supabase";
 
 const cartRouter = Router();
 
@@ -11,12 +10,14 @@ cartRouter.get("/cart", async (req, res) => {
       res.status(400).json({ error: "sessionId is required" });
       return;
     }
-    const items = await db
-      .select()
-      .from(cartItemsTable)
-      .where(eq(cartItemsTable.sessionId, sessionId))
-      .orderBy(cartItemsTable.createdAt);
-    res.json(items);
+    const supabase = getSupabaseClient();
+    const { data, error } = await supabase
+      .from("cart_items")
+      .select("*")
+      .eq("session_id", sessionId)
+      .order("created_at");
+    if (error) throw error;
+    res.json(data);
   } catch (error) {
     req.log.error(error, "Failed to fetch cart");
     res.status(500).json({ error: "Failed to fetch cart" });
@@ -30,28 +31,34 @@ cartRouter.post("/cart", async (req, res) => {
       res.status(400).json({ error: "Missing required fields" });
       return;
     }
+    const supabase = getSupabaseClient();
 
-    const existing = await db
-      .select()
-      .from(cartItemsTable)
-      .where(and(eq(cartItemsTable.sessionId, sessionId), eq(cartItemsTable.productId, productId)))
+    const { data: existing } = await supabase
+      .from("cart_items")
+      .select("*")
+      .eq("session_id", sessionId)
+      .eq("product_id", productId)
       .limit(1);
 
-    if (existing.length > 0) {
-      const updated = await db
-        .update(cartItemsTable)
-        .set({ quantity: existing[0].quantity + (quantity ?? 1) })
-        .where(eq(cartItemsTable.id, existing[0].id))
-        .returning();
-      res.status(201).json(updated[0]);
+    if (existing && existing.length > 0) {
+      const { data, error } = await supabase
+        .from("cart_items")
+        .update({ quantity: existing[0].quantity + (quantity ?? 1) })
+        .eq("id", existing[0].id)
+        .select()
+        .single();
+      if (error) throw error;
+      res.status(201).json(data);
       return;
     }
 
-    const inserted = await db
-      .insert(cartItemsTable)
-      .values({ sessionId, productId, productName, productImage, price, quantity: quantity ?? 1 })
-      .returning();
-    res.status(201).json(inserted[0]);
+    const { data, error } = await supabase
+      .from("cart_items")
+      .insert({ session_id: sessionId, product_id: productId, product_name: productName, product_image: productImage, price, quantity: quantity ?? 1 })
+      .select()
+      .single();
+    if (error) throw error;
+    res.status(201).json(data);
   } catch (error) {
     req.log.error(error, "Failed to add to cart");
     res.status(500).json({ error: "Failed to add to cart" });
@@ -61,7 +68,9 @@ cartRouter.post("/cart", async (req, res) => {
 cartRouter.delete("/cart/:id", async (req, res) => {
   try {
     const id = Number(req.params.id);
-    await db.delete(cartItemsTable).where(eq(cartItemsTable.id, id));
+    const supabase = getSupabaseClient();
+    const { error } = await supabase.from("cart_items").delete().eq("id", id);
+    if (error) throw error;
     res.json({ success: true });
   } catch (error) {
     req.log.error(error, "Failed to remove from cart");
@@ -77,12 +86,15 @@ cartRouter.patch("/cart/:id/quantity", async (req, res) => {
       res.status(400).json({ error: "quantity must be >= 1" });
       return;
     }
-    const updated = await db
-      .update(cartItemsTable)
-      .set({ quantity })
-      .where(eq(cartItemsTable.id, id))
-      .returning();
-    res.json(updated[0]);
+    const supabase = getSupabaseClient();
+    const { data, error } = await supabase
+      .from("cart_items")
+      .update({ quantity })
+      .eq("id", id)
+      .select()
+      .single();
+    if (error) throw error;
+    res.json(data);
   } catch (error) {
     req.log.error(error, "Failed to update cart quantity");
     res.status(500).json({ error: "Failed to update cart quantity" });

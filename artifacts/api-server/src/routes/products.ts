@@ -1,27 +1,25 @@
 import { Router } from "express";
-import { db, productsTable } from "@workspace/db";
-import { eq, and, SQL } from "drizzle-orm";
+import { getSupabaseClient } from "../lib/supabase";
 
 const productsRouter = Router();
 
 productsRouter.get("/products", async (req, res) => {
   try {
     const { categoryId, featured } = req.query;
-    const conditions: SQL[] = [];
+    const supabase = getSupabaseClient();
+
+    let query = supabase.from("products").select("*").order("id");
 
     if (categoryId) {
-      conditions.push(eq(productsTable.categoryId, Number(categoryId)));
+      query = query.eq("category_id", Number(categoryId));
     }
     if (featured === "true") {
-      conditions.push(eq(productsTable.isFeatured, true));
+      query = query.eq("is_featured", true);
     }
 
-    const products =
-      conditions.length > 0
-        ? await db.select().from(productsTable).where(and(...conditions)).orderBy(productsTable.id)
-        : await db.select().from(productsTable).orderBy(productsTable.id);
-
-    res.json(products);
+    const { data, error } = await query;
+    if (error) throw error;
+    res.json(data);
   } catch (error) {
     req.log.error(error, "Failed to fetch products");
     res.status(500).json({ error: "Failed to fetch products" });

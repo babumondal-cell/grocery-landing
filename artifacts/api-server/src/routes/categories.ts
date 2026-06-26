@@ -1,12 +1,17 @@
 import { Router } from "express";
-import { db, categoriesTable } from "@workspace/db";
+import { getSupabaseClient } from "../lib/supabase";
 
 const categoriesRouter = Router();
 
 categoriesRouter.get("/categories", async (req, res) => {
   try {
-    const categories = await db.select().from(categoriesTable).orderBy(categoriesTable.id);
-    res.json(categories);
+    const supabase = getSupabaseClient();
+    const { data, error } = await supabase
+      .from("categories")
+      .select("*")
+      .order("id");
+    if (error) throw error;
+    res.json(data);
   } catch (error) {
     req.log.error(error, "Failed to fetch categories");
     res.status(500).json({ error: "Failed to fetch categories" });

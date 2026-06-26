@@ -149,13 +149,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                quantity:
-                  type: integer
-                  minimum: 1
-              required:
-                - quantity
+              $ref: "#/components/schemas/CartQuantityUpdate"
       responses:
         "200":
           description: Updated cart item
@@ -256,6 +250,15 @@ components:
         - productName
         - productImage
         - price
+        - quantity
+
+    CartQuantityUpdate:
+      type: object
+      properties:
+        quantity:
+          type: integer
+          minimum: 1
+      required:
         - quantity
 
     AddToCartInput:
