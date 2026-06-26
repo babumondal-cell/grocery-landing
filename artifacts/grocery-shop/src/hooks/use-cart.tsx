@@ -15,8 +15,8 @@ function getSessionId(): string {
 interface CartItem {
   id: number;
   productId: number;
-  productName: string;
-  productImage: string;
+  product_name: string;
+  product_image: string;
   price: string;
   quantity: number;
   sessionId: string;
