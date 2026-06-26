@@ -227,9 +227,9 @@ export default function CheckoutPage() {
                   <div className="space-y-3 mb-5 max-h-60 overflow-y-auto pr-1">
                     {items.map((item) => (
                       <div key={item.id} className="flex items-center gap-3 text-sm">
-                        <img src={item.productImage} alt={item.productName} className="h-10 w-10 rounded-lg object-cover bg-muted/30 flex-shrink-0" />
+                        <img src={item.product_image} alt={item.product_name} className="h-10 w-10 rounded-lg object-cover bg-muted/30 flex-shrink-0" />
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium truncate">{item.productName}</p>
+                          <p className="font-medium truncate">{item.product_name}</p>
                           <p className="text-muted-foreground">x{item.quantity}</p>
                         </div>
                         <span className="font-semibold">${(parseFloat(item.price) * item.quantity).toFixed(2)}</span>
