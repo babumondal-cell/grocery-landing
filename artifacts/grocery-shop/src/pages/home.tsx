@@ -15,13 +15,17 @@ import {
   Menu,
   Star,
   Check,
+  User,
+  LogOut,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { useListCategories, useListProducts } from "@workspace/api-client-react";
+import { useAuth } from "@workspace/replit-auth-web";
 
 function Navbar() {
   const { count } = useCart();
+  const { user, isLoading: authLoading, isAuthenticated, login, logout } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -67,15 +71,39 @@ function Navbar() {
           <Button variant="ghost" size="icon" className="lg:hidden">
             <Search className="h-5 w-5" />
           </Button>
-          <Button variant="outline" className="hidden sm:flex rounded-full">Log In</Button>
-          <Button className="relative rounded-full" size="icon" variant="default" data-testid="button-cart">
-            <ShoppingCart className="h-5 w-5" />
-            {count > 0 && (
-              <span className="absolute -top-1 -right-1 bg-secondary text-secondary-foreground text-xs font-bold h-5 w-5 rounded-full flex items-center justify-center">
-                {count}
-              </span>
-            )}
-          </Button>
+
+          {!authLoading && (
+            isAuthenticated ? (
+              <div className="hidden sm:flex items-center gap-2">
+                {user?.profileImageUrl ? (
+                  <img src={user.profileImageUrl} alt={user.firstName ?? "User"} className="h-8 w-8 rounded-full object-cover border-2 border-primary/20" />
+                ) : (
+                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <User className="h-4 w-4 text-primary" />
+                  </div>
+                )}
+                <span className="text-sm font-medium text-foreground max-w-[100px] truncate">{user?.firstName ?? "Hi!"}</span>
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" onClick={logout} title="Log out">
+                  <LogOut className="h-4 w-4" />
+                </Button>
+              </div>
+            ) : (
+              <Button variant="outline" className="hidden sm:flex rounded-full" onClick={login} data-testid="button-login">
+                Log In
+              </Button>
+            )
+          )}
+
+          <Link href="/cart">
+            <Button className="relative rounded-full" size="icon" variant="default" data-testid="button-cart">
+              <ShoppingCart className="h-5 w-5" />
+              {count > 0 && (
+                <span className="absolute -top-1 -right-1 bg-secondary text-secondary-foreground text-xs font-bold h-5 w-5 rounded-full flex items-center justify-center">
+                  {count}
+                </span>
+              )}
+            </Button>
+          </Link>
         </div>
       </div>
     </header>

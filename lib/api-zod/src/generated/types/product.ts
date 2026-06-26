@@ -12,7 +12,9 @@ export interface Product {
   image: string;
   price: string;
   unit: string;
+  /** @nullable */
   badge?: string | null;
+  /** @nullable */
   categoryId?: number | null;
   rating: string;
   reviewCount: number;

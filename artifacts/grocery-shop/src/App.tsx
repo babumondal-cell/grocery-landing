@@ -5,6 +5,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { CartProvider } from "@/hooks/use-cart";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
+import CartPage from "@/pages/cart";
+import CheckoutPage from "@/pages/checkout";
 
 const queryClient = new QueryClient();
 
@@ -12,6 +14,8 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/cart" component={CartPage} />
+      <Route path="/checkout" component={CheckoutPage} />
       <Route component={NotFound} />
     </Switch>
   );

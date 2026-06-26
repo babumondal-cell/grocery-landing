@@ -17,6 +17,91 @@ export const HealthCheckResponse = zod.object({
 
 
 /**
+ * @summary Get the currently authenticated user
+ */
+export const GetCurrentAuthUserHeader = zod.object({
+  "Authorization": zod.string().optional().describe('Opaque session token — `Bearer <sid>`.')
+})
+
+export const GetCurrentAuthUserResponse = zod.object({
+  "user": zod.union([zod.object({
+  "id": zod.string(),
+  "email": zod.string().email().nullable(),
+  "firstName": zod.string().nullable(),
+  "lastName": zod.string().nullable(),
+  "profileImageUrl": zod.string().nullable()
+}),zod.null()])
+})
+
+
+/**
+ * @summary Start the browser OIDC login flow
+ */
+export const BeginBrowserLoginQueryParams = zod.object({
+  "returnTo": zod.coerce.string().optional()
+})
+
+export const BeginBrowserLoginResponse = zod.void()
+
+
+/**
+ * @summary Complete the browser OIDC login flow
+ */
+export const HandleBrowserLoginCallbackQueryParams = zod.object({
+  "code": zod.coerce.string().optional(),
+  "state": zod.coerce.string().optional(),
+  "iss": zod.coerce.string().url().optional()
+})
+
+export const HandleBrowserLoginCallbackResponse = zod.void()
+
+
+/**
+ * @summary Clear session and begin OIDC logout
+ */
+export const LogoutBrowserSessionHeader = zod.object({
+  "Authorization": zod.string().optional().describe('Opaque session token — `Bearer <sid>`.')
+})
+
+export const LogoutBrowserSessionResponse = zod.void()
+
+
+/**
+ * @summary Exchange a mobile OIDC code for a session token
+ */
+
+
+
+
+
+
+
+export const ExchangeMobileAuthorizationCodeBody = zod.object({
+  "code": zod.string().min(1),
+  "code_verifier": zod.string().min(1),
+  "redirect_uri": zod.string().url().min(1),
+  "state": zod.string().min(1),
+  "nonce": zod.string().min(1).optional()
+})
+
+export const ExchangeMobileAuthorizationCodeResponse = zod.object({
+  "token": zod.string()
+})
+
+
+/**
+ * @summary Delete a mobile session token
+ */
+export const LogoutMobileSessionHeader = zod.object({
+  "Authorization": zod.string().optional().describe('Opaque session token — `Bearer <sid>`.')
+})
+
+export const LogoutMobileSessionResponse = zod.object({
+  "success": zod.boolean()
+})
+
+
+/**
  * @summary List all categories
  */
 export const ListCategoriesResponseItem = zod.object({
@@ -129,6 +214,36 @@ export const UpdateCartQuantityResponse = zod.object({
   "productImage": zod.string(),
   "price": zod.string(),
   "quantity": zod.number()
+})
+
+
+/**
+ * @summary Place a new order
+ */
+export const CreateOrderBody = zod.object({
+  "sessionId": zod.string(),
+  "name": zod.string(),
+  "email": zod.string(),
+  "phone": zod.string().optional(),
+  "address": zod.string(),
+  "city": zod.string(),
+  "zip": zod.string(),
+  "notes": zod.string().optional()
+})
+
+export const CreateOrderResponse = zod.object({
+  "id": zod.number(),
+  "sessionId": zod.string(),
+  "name": zod.string(),
+  "email": zod.string(),
+  "phone": zod.string().nullish(),
+  "address": zod.string(),
+  "city": zod.string(),
+  "zip": zod.string(),
+  "notes": zod.string().nullish(),
+  "total": zod.string(),
+  "status": zod.string(),
+  "createdAt": zod.string()
 })
 
 
