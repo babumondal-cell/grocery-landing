@@ -1,0 +1,1 @@
+- [Supabase TCP blocked](supabase-tcp.md) — raw TCP to Supabase port 5432/6543 is blocked; use Supabase JS client (REST) instead of Drizzle for all DB operations.
